@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <!-- CO1 → Basic HTML document structure + meta tags -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Elite Public School Student Portal">
+
+    <!-- CO1 → Document title -->
+    <title>Elite Public School - Student Portal 2026</title>
+
+    <!-- CO1 & CO2 → External CSS (Tailwind via CDN) + icon library -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- CO1 & CO2 → Custom CSS: font import, basic typography, glass effect, animation -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+
+        /* CO2 → Advanced styling: glassmorphism + backdrop-filter */
+        .glass {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        /* CO2 → Transitions + page visibility + spinner animation */
+        .sidebar { transition: all 0.3s; }
+        .page { display: none; }
+        .page.active { display: block; }
+
+        .spinner {
+            border: 4px solid rgba(255,255,255,0.3);
+            border-top: 4px solid white;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+
+<!-- CO2 → Main background gradient (responsive full-screen layout) -->
+<body class="bg-gradient-to-br from-orange-700 via-orange-800 to-red-900 min-h-screen text-white">
+
+<!-- ===================================================================== -->
+<!--                          LOGIN SCREEN                                 -->
+<!-- ===================================================================== -->
+
+<!-- CO2 → Centered layout using flexbox -->
+<div id="login-page" class="min-h-screen flex items-center justify-center px-4">
+    <div class="glass w-full max-w-md rounded-3xl p-10 shadow-2xl">
+
+        <!-- CO1 → Headings, paragraph, icon usage -->
+        <div class="text-center mb-8">
+            <i class="fas fa-graduation-cap text-6xl text-white mb-4"></i>
+            <h1 class="text-3xl font-bold">Elite Public School</h1>
+            <p class="text-blue-200 mt-2">Student Portal Login • 2026</p>
+        </div>
+
+        <!-- CO2 → Form + input elements + labels -->
+        <!-- CO5 → Basic HTML5 validation attributes + error message containers -->
+        <form id="loginForm" class="space-y-6" novalidate>
+            <div>
+                <label class="block text-sm mb-2">Roll Number</label>
+                <input id="roll" type="text" placeholder="101" required minlength="3" maxlength="10"
+                       class="w-full bg-white/10 border border-white/30 rounded-2xl px-5 py-4 focus:outline-none focus:border-white/50">
+                <p id="rollError" class="text-red-400 text-xs mt-1 hidden">3–10 characters required</p>
+            </div>
+            <div>
+                <label class="block text-sm mb-2">Password</label>
+                <input id="pass" type="password" placeholder="••••••••" required minlength="4"
+                       class="w-full bg-white/10 border border-white/30 rounded-2xl px-5 py-4 focus:outline-none focus:border-white/50">
+                <p id="passError" class="text-red-400 text-xs mt-1 hidden">Minimum 4 characters</p>
+            </div>
+
+            <!-- CO4 + CO5 → Button with JavaScript event handling -->
+            <button type="submit"
+                    class="w-full bg-white text-indigo-900 font-semibold py-4 rounded-2xl hover:bg-blue-100 transition flex items-center justify-center gap-3">
+                <span id="login-text">LOGIN</span>
+                <div id="spinner" class="hidden w-5 h-5 border-4 border-indigo-900 border-t-transparent rounded-full spinner"></div>
+            </button>
+        </form>
+
+        <!-- CO1 → Simple static footer text -->
+        <p class="text-center text-xs text-blue-200 mt-8">© Elite Public School 2026</p>
+    </div>
+</div>
+
+<!-- ===================================================================== -->
+<!--                        MAIN APPLICATION (after login)                 -->
+<!-- ===================================================================== -->
+
+<div id="main-app" class="hidden flex h-screen">
+
+    <!-- CO2 → Sidebar layout: flex column + glass + border + transition -->
+    <div id="sidebar" class="sidebar w-72 bg-white/10 backdrop-blur-xl border-r border-white/20 flex flex-col">
+        <div class="p-6 border-b border-white/20 flex items-center gap-3">
+            <div class="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center text-2xl">🏫</div>
+            <div>
+                <h2 class="font-bold text-xl">Elite Public School</h2>
+                <p class="text-xs text-blue-200">Student Portal</p>
+            </div>
+        </div>
+
+        <!-- CO2 → Navigation menu with hover effects -->
+        <div class="flex-1 py-6 px-4 space-y-2">
+            <div onclick="showPage('dashboard')" class="nav-item flex items-center gap-4 px-6 py-4 rounded-2xl hover:bg-white/10 cursor-pointer">
+                <i class="fas fa-home w-5"></i><span class="font-medium">Dashboard</span>
+            </div>
+            <div onclick="showPage('profile')" class="nav-item flex items-center gap-4 px-6 py-4 rounded-2xl hover:bg-white/10 cursor-pointer">
+                <i class="fas fa-user w-5"></i><span class="font-medium">My Profile</span>
+            </div>
+            <div onclick="showPage('attendance')" class="nav-item flex items-center gap-4 px-6 py-4 rounded-2xl hover:bg-white/10 cursor-pointer">
+                <i class="fas fa-calendar-check w-5"></i><span class="font-medium">Attendance</span>
+            </div>
+            <div onclick="showPage('subjects')" class="nav-item flex items-center gap-4 px-6 py-4 rounded-2xl hover:bg-white/10 cursor-pointer">
+                <i class="fas fa-book w-5"></i><span class="font-medium">Subjects</span>
+            </div>
+            <div onclick="showPage('contact')" class="nav-item flex items-center gap-4 px-6 py-4 rounded-2xl hover:bg-white/10 cursor-pointer">
+                <i class="fas fa-envelope w-5"></i><span class="font-medium">Contact</span>
+            </div>
+        </div>
+
+        <!-- CO4 → Logout action (onclick event) -->
+        <div class="p-6 border-t border-white/20">
+            <div onclick="logout()" class="flex items-center gap-4 px-6 py-4 rounded-2xl hover:bg-red-500/20 cursor-pointer text-red-300">
+                <i class="fas fa-sign-out-alt w-5"></i><span class="font-medium">Logout</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT AREA -->
+    <div class="flex-1 overflow-auto">
+
+        <!-- CO2 → Header with responsive mobile menu button -->
+        <div class="glass m-6 rounded-3xl px-8 py-5 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <button onclick="toggleSidebar()" class="lg:hidden text-2xl"><i class="fas fa-bars"></i></button>
+                <h1 id="page-title" class="text-2xl font-bold">Dashboard</h1>
+            </div>
+            <div class="flex items-center gap-4">
+                <div class="text-right">
+                    <p class="font-semibold">Rahul Sharma</p>
+                    <p class="text-xs text-blue-200">Class 10-A • Roll 101</p>
+                </div>
+                <div class="w-10 h-10 bg-white/30 rounded-2xl flex items-center justify-center text-2xl">👦</div>
+            </div>
+        </div>
+
+        <!-- ===================================================================== -->
+        <!--                           PAGE CONTENTS                               -->
+        <!-- ===================================================================== -->
+
+        <!-- Dashboard page -->
+        <div id="dashboard" class="page active p-6">
+            <!-- CO2 → Responsive grid layout (1–3 columns) -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="glass rounded-3xl p-8">
+                    <p class="text-blue-200">Attendance</p>
+                    <p class="text-6xl font-bold mt-4">94%</p>
+                    <p class="text-green-400 text-sm mt-2">Excellent 🎉</p>
+                </div>
+                <div class="glass rounded-3xl p-8">
+                    <p class="text-blue-200">Next Exam</p>
+                    <p class="text-4xl font-bold mt-4">Mathematics</p>
+                    <p class="text-sm mt-2">23 Feb 2026</p>
+                </div>
+                <div class="glass rounded-3xl p-8">
+                    <p class="text-blue-200">Fee Status</p>
+                    <p class="text-4xl font-bold mt-4 text-green-400">PAID</p>
+                </div>
+            </div>
+
+            <!-- CO4 → Container for dynamically generated notices -->
+            <div class="mt-8 glass rounded-3xl p-8">
+                <h3 class="font-semibold mb-6">Recent Notices</h3>
+                <ul id="notices-list" class="space-y-4 text-sm"></ul>
+            </div>
+        </div>
+
+        <!-- Profile page -->
+        <div id="profile" class="page p-6">
+            <!-- CO2 → Responsive flex + grid layout -->
+            <div class="glass rounded-3xl p-10 max-w-2xl mx-auto">
+                <div class="flex flex-col md:flex-row gap-10 items-center">
+                    <div class="w-40 h-40 bg-white/20 rounded-3xl flex items-center justify-center text-8xl">👦</div>
+                    <div>
+                        <h2 class="text-4xl font-bold">Rahul Sharma</h2>
+                        <p class="text-blue-200">Roll No: 101 • Class: 10-A</p>
+                        <div class="mt-8 grid grid-cols-2 gap-6 text-sm">
+                            <div><span class="text-blue-200">DOB:</span> 15 Mar 2010</div>
+                            <div><span class="text-blue-200">Father:</span> Mr. Amit Sharma</div>
+                            <div><span class="text-blue-200">Mobile:</span> 98765 43210</div>
+                            <div><span class="text-blue-200">Address:</span> Delhi</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Attendance page -->
+        <div id="attendance" class="page p-6">
+            <div class="glass rounded-3xl p-8">
+                <h3 class="font-semibold text-xl mb-6">February 2026 Attendance</h3>
+                <table class="w-full">
+                    <thead>
+                        <tr class="border-b border-white/20">
+                            <th class="py-4 text-left">Date</th>
+                            <th class="py-4">Status</th>
+                        </tr>
+                    </thead>
+                    <!-- CO4 → Container for dynamically generated rows -->
+                    <tbody id="attendance-body" class="text-sm"></tbody>
+                </table>
+                <div class="mt-8 text-center text-5xl font-bold text-green-400">94%</div>
+            </div>
+        </div>
+
+        <!-- Subjects page -->
+        <div id="subjects" class="page p-6">
+            <!-- CO4 → Container for dynamically generated subject cards -->
+            <div id="subjects-container" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+        </div>
+
+        <!-- Contact page -->
+        <div id="contact" class="page p-6">
+            <div class="glass rounded-3xl p-10 max-w-xl mx-auto">
+                <h3 class="text-2xl font-bold mb-8">School Contact</h3>
+                <p class="flex gap-3 mb-6"><i class="fas fa-phone w-6"></i> 011-23456789</p>
+                <p class="flex gap-3 mb-6"><i class="fas fa-envelope w-6"></i> info@elitepublicschool.edu.in</p>
+                <p class="flex gap-3"><i class="fas fa-map-marker-alt w-6"></i> Sector 15, Rohini, Delhi</p>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+// ────────────────────────────────────────────────
+// CO3 → Data structures: arrays of objects
+// ────────────────────────────────────────────────
+const subjects = [
+    { name: "Mathematics", teacher: "Mr. Rajesh", progress: 80 },
+    { name: "Science", teacher: "Mrs. Priya", progress: 75 },
+    { name: "English", teacher: "Ms. Anjali", progress: 92 },
+    { name: "Social Science", teacher: "Mr. Vikram", progress: 68 }
+];
+
+const notices = [
+    "Parent-Teacher Meeting on 25 Feb 2026",
+    "Sports Day registration open – last date 15 Feb",
+    "Mid-term result declared",
+    "Annual function practice starts 10 Feb"
+];
+
+const attendanceData = [
+    { date: "01 Feb", status: "Present", color: "text-green-400" },
+    { date: "02 Feb", status: "Present", color: "text-green-400" },
+    { date: "03 Feb", status: "Absent", color: "text-red-400" },
+    { date: "04 Feb", status: "Present", color: "text-green-400" },
+    { date: "05 Feb", status: "Present", color: "text-green-400" }
+];
+
+// ────────────────────────────────────────────────
+// CO4 → DOM manipulation + array methods (.forEach)
+// ────────────────────────────────────────────────
+function renderNotices() {
+    const ul = document.getElementById('notices-list');
+    ul.innerHTML = '';
+    notices.forEach(notice => {
+        const li = document.createElement('li');
+        li.className = 'flex gap-4';
+        li.innerHTML = `<span class="text-green-400">•</span> ${notice}`;
+        ul.appendChild(li);
+    });
+}
+
+function renderAttendance() {
+    const tbody = document.getElementById('attendance-body');
+    tbody.innerHTML = '';
+    attendanceData.forEach(item => {
+        const tr = document.createElement('tr');
+        tr.className = 'border-b border-white/10';
+        tr.innerHTML = `<td class="py-4">${item.date}</td><td class="${item.color}">${item.status}</td>`;
+        tbody.appendChild(tr);
+    });
+}
+
+function renderSubjects() {
+    const container = document.getElementById('subjects-container');
+    container.innerHTML = '';
+    subjects.forEach(subject => {
+        const div = document.createElement('div');
+        div.className = 'glass rounded-3xl p-8';
+        div.innerHTML = `
+            <div class="flex justify-between font-bold">
+                <span>${subject.name}</span>
+                <span class="text-blue-300">${subject.teacher}</span>
+            </div>
+            <div class="h-2 bg-white/20 rounded-full mt-6">
+                <div class="h-2 bg-green-400 rounded-full" style="width: ${subject.progress}%"></div>
+            </div>
+        `;
+        container.appendChild(div);
+    });
+}
+
+// ────────────────────────────────────────────────
+// CO4 → Page navigation + dynamic content loading
+// ────────────────────────────────────────────────
+function showPage(page) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(page).classList.add('active');
+
+    document.getElementById('page-title').textContent =
+        page === 'dashboard' ? 'Dashboard' :
+        page === 'profile' ? 'My Profile' :
+        page === 'attendance' ? 'Attendance' :
+        page === 'subjects' ? 'My Subjects' : 'Contact';
+
+    // Trigger rendering when switching to relevant pages
+    if (page === 'dashboard') renderNotices();
+    if (page === 'attendance') renderAttendance();
+    if (page === 'subjects') renderSubjects();
+}
+
+// ────────────────────────────────────────────────
+// CO4 + CO5 → Form submission handling + basic validation
+// ────────────────────────────────────────────────
+document.getElementById('loginForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const roll = document.getElementById('roll').value.trim();
+    const pass = document.getElementById('pass').value.trim();
+
+    if (roll === '101' && pass === '1234') {
+        document.getElementById('login-page').classList.add('hidden');
+        document.getElementById('main-app').classList.remove('hidden');
+        showPage('dashboard');
+    } else {
+        alert('Wrong Roll or Password!\nTry: 101 / 1234');
+    }
+});
+
+// ────────────────────────────────────────────────
+// CO4 → Logout + mobile sidebar toggle
+// ────────────────────────────────────────────────
+function logout() {
+    if (confirm('Logout?')) {
+        location.reload();
+    }
+}
+
+function toggleSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    sidebar.style.transform = sidebar.style.transform === 'translateX(-100%)' ? 'translateX(0)' : 'translateX(-100%)';
+}
+
+document.addEventListener('click', function(e) {
+    const sidebar = document.getElementById('sidebar');
+    if (window.innerWidth < 1024 && !sidebar.contains(e.target) && !e.target.closest('button[onclick="toggleSidebar()"]')) {
+        sidebar.style.transform = 'translateX(-100%)';
+    }
+});
+</script>
+</body>
+</html>
